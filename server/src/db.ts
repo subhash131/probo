@@ -1,4 +1,5 @@
-import type { INR_BALANCES, ORDERBOOK } from "./types";
+import type { INR_BALANCE, ORDER, STOCK_BALANCE } from "./types";
 
-export const INR_BALANCES_Data: INR_BALANCES = {};
-export const ORDERBOOK_Data: ORDERBOOK = {};
+export const INR_BALANCES: INR_BALANCE = {};
+export const ORDERBOOK: ORDER = {};
+export const STOCK_BALANCES: STOCK_BALANCE = {};
