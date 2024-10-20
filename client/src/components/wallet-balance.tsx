@@ -13,10 +13,9 @@ const WalletBalance = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log("wallet", socket?.active);
     socket?.emit("fetch-balance", username);
     socket?.on("balance-response", (data) => {
-      if (data) {
+      if (data && data.balance) {
         dispatch(setBalance(data.balance));
       } else {
         dispatch(setBalance(0));

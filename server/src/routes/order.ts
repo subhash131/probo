@@ -15,11 +15,11 @@ router.post("/buy", (req: Request, res: Response) => {
     stockType
   );
   if (invalidInput) {
-    res.send({ error: "Invalid body, please recheck the fields" }).status(404);
+    res.send({ msg: "Invalid body, please recheck the fields" }).status(404);
     return;
   }
   if (!INR_BALANCES[userId]) {
-    res.send({ error: "user not found!" }).status(404);
+    res.send({ msg: "user not found!" }).status(404);
     return;
   }
 
@@ -27,7 +27,7 @@ router.post("/buy", (req: Request, res: Response) => {
     INR_BALANCES[userId].balance - INR_BALANCES[userId].locked <
     Number(quantity) * Number(price)
   ) {
-    res.send({ error: "Insufficient Balance!" }).status(400);
+    res.send({ msg: "Insufficient Balance!" }).status(400);
   }
 });
 
@@ -42,7 +42,7 @@ router.post("/sell", (req: Request, res: Response) => {
     stockType
   );
   if (invalidInput) {
-    res.send({ error: "Invalid body, please recheck the fields" }).status(404);
+    res.send({ msg: "Invalid body, please recheck the fields" }).status(404);
     return;
   }
   res.send({ msg: "User Created" });

@@ -17,7 +17,7 @@ router.get("/inr/:userId", (req: Request, res: Response) => {
 router.get("/stock/:userId", (req: Request, res: Response) => {
   const { userId } = req.params;
   if (!STOCK_BALANCES[userId]) {
-    res.send({ error: "User not found" }).status(404);
+    res.send({ msg: "User not found" }).status(404);
     return;
   }
   res.send(STOCK_BALANCES[userId]).status(200);

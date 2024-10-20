@@ -9,15 +9,15 @@ router.post("/mint", (req: Request, res: Response) => {
   const { userId, stockSymbol, quantity } = req.body;
   const invalidInput = validateInput(userId, stockSymbol, quantity);
   if (invalidInput) {
-    res.send({ error: "Invalid body, please recheck the fields" }).status(404);
+    res.send({ msg: "Invalid body, please recheck the fields" }).status(404);
     return;
   }
   if (!INR_BALANCES[userId]) {
-    res.send({ error: "user not found!" }).status(404);
+    res.send({ msg: "user not found!" }).status(404);
     return;
   }
   if (!ORDERBOOK[stockSymbol]) {
-    res.send({ error: "stock not found!" }).status(404);
+    res.send({ msg: "stock not found!" }).status(404);
     return;
   }
   ORDERBOOK[stockSymbol];

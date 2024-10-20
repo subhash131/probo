@@ -12,7 +12,7 @@ router.get("/", (req: Request, res: Response) => {
 router.get("/:stockSymbol", (req: Request, res: Response) => {
   const { stockSymbol } = req.params;
   if (!STOCK_BALANCES[stockSymbol]) {
-    res.send({ error: "Stock symbol not found!" }).status(404);
+    res.send({ msg: "Stock symbol not found!" }).status(404);
     return;
   }
   res.send(STOCK_BALANCES[stockSymbol]).status(200);

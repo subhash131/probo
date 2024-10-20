@@ -9,10 +9,12 @@ router.post("/inr", (req: Request, res: Response) => {
   const { userId, amount } = req.body;
   const invalidInput = validateInput(userId, amount);
 
-  if (invalidInput)
-    res.send({ error: "Invalid body, please recheck the fields" }).status(404);
+  if (invalidInput) {
+    res.send({ msg: "Invalid body, please recheck the fields" }).status(404);
+    return;
+  }
   if (!INR_BALANCES[userId]) {
-    res.send({ error: "user not found!" }).status(404);
+    res.send({ msg: "user not found!" }).status(404);
     return;
   }
 

@@ -5,7 +5,7 @@ import Username from "./username";
 
 const Navbar = () => {
   return (
-    <div className="w-full h-16 flex items-center justify-between">
+    <div className="w-full h-16 flex items-center justify-between px-10 fixed top-0">
       <Image
         src="/logo.png"
         alt="logo"
