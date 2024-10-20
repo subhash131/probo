@@ -1,5 +1,6 @@
 import express from "express";
 import { Server, type Socket } from "socket.io";
+import cors from "cors";
 import { createServer } from "http";
 
 import userRoutes from "./routes/user";
@@ -23,9 +24,18 @@ const io = new Server(server, {
     methods: ["GET", "POST", "PUT", "DELETE"],
   },
 });
+// Configure CORS
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  })
+);
 
-//to read body
+//parse JSON bodies
 app.use(express.json());
+
+// Routes
 app.use("/user", userRoutes);
 app.use("/balance", balanceRoutes);
 app.use("/balances", balancesRoutes);
@@ -36,15 +46,21 @@ app.use("/onramp", onrampRoutes);
 app.use("/order", orderRoutes);
 app.use("/trade", tradeRoutes);
 
+//server
 server.listen(port, () => {
   console.log(`Probo listening on port ${port}`);
 });
 
+// websocket
 io.on("connection", (socket: Socket) => {
   console.log("a user connected::", socket.id);
 
   socket.on("fetch-balance", (userId) => {
-    socket.emit("balance-response", INR_BALANCES[userId]);
+    if (INR_BALANCES[userId]) {
+      socket.emit("balance-response", INR_BALANCES[userId]);
+    } else {
+      socket.emit("balance-response", { msg: "User not found" });
+    }
   });
 
   socket.on("disconnect", () => {
