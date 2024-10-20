@@ -22,7 +22,6 @@ router.post("/buy", (req: Request, res: Response) => {
     res.send({ msg: "user not found!" }).status(404);
     return;
   }
-
   if (
     INR_BALANCES[userId].balance - INR_BALANCES[userId].locked <
     Number(quantity) * Number(price)
