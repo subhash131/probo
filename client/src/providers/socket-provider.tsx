@@ -36,7 +36,6 @@ const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     function onConnect() {
       setIsConnected(true);
       setTransport(socket.io.engine.transport.name);
-
       socket.io.engine.on("upgrade", (transport) => {
         setTransport(transport.name);
       });
@@ -53,7 +52,6 @@ const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     return () => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
-      socket.disconnect();
     };
   }, []);
 

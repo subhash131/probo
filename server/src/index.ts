@@ -11,6 +11,7 @@ import resetRoutes from "./routes/reset";
 import onrampRoutes from "./routes/onramp";
 import orderRoutes from "./routes/order";
 import tradeRoutes from "./routes/trade";
+import { INR_BALANCES } from "./db";
 
 const app = express();
 const port = 8000;
@@ -35,13 +36,18 @@ app.use("/onramp", onrampRoutes);
 app.use("/order", orderRoutes);
 app.use("/trade", tradeRoutes);
 
+server.listen(port, () => {
+  console.log(`Probo listening on port ${port}`);
+});
+
 io.on("connection", (socket: Socket) => {
   console.log("a user connected::", socket.id);
+
+  socket.on("fetch-balance", (userId) => {
+    socket.emit("balance-response", INR_BALANCES[userId]);
+  });
+
   socket.on("disconnect", () => {
     console.log("user disconnected ::", socket.id);
   });
-});
-
-server.listen(port, () => {
-  console.log(`Probo listening on port ${port}`);
 });

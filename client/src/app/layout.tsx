@@ -23,7 +23,9 @@ export default function RootLayout({
     <html lang="en">
       <StateProvider>
         <SocketProvider>
-          <body className={`${poppins.className}`}>{children}</body>
+          <body className={`${poppins.className} bg-background`}>
+            {children}
+          </body>
         </SocketProvider>
       </StateProvider>
     </html>

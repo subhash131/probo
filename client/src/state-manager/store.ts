@@ -1,7 +1,8 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import walletBalance from "./features/wallet-balance";
+import username from "./features/username";
 
-const reducer = combineReducers({ walletBalance });
+const reducer = combineReducers({ walletBalance, username });
 
 export const store = configureStore({
   reducer,

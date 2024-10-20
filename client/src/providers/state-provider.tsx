@@ -1,3 +1,4 @@
+"use client";
 import { store } from "@/state-manager/store";
 import React from "react";
 import { Provider } from "react-redux";
