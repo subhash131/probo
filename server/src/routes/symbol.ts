@@ -1,15 +1,15 @@
 import { Router, type Request, type Response } from "express";
-import { ORDERBOOK } from "../db";
+import { ORDERBOOK, STOCK_BALANCES } from "../db";
 
 const router = Router();
 
 //create a new symbol in STOCK_BALANCES with default yes and no entries
 router.post("/create/:stockSymbol", (req: Request, res: Response) => {
   const { stockSymbol } = req.params;
-  if (ORDERBOOK[stockSymbol]) {
+  if (STOCK_BALANCES[stockSymbol]) {
     res.status(400).send({ msg: "Stock symbol already exist!" });
   } else {
-    ORDERBOOK[stockSymbol] = {
+    STOCK_BALANCES[stockSymbol] = {
       no: {},
       yes: {},
     };
@@ -17,7 +17,7 @@ router.post("/create/:stockSymbol", (req: Request, res: Response) => {
   }
 });
 
-//initialize stock (custom)
+//DNU:: initialize stock (custom)
 router.post("/init/:stockSymbol", (req: Request, res: Response) => {
   const { stockSymbol } = req.params;
   const { yesPrice, yesOrders, noPrice, noOrders } = req.body;

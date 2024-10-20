@@ -5,41 +5,30 @@ export type INR_BALANCE = {
   };
 };
 
-export type ORDER = {
-  [asset: string]: Market;
-};
-export type STOCK_BALANCE = {
-  [user: string]: Market;
-};
-
-type Market = {
-  yes?: Side;
-  no?: Side;
-};
-
-type Side = {
-  [price: string]: Order;
+export type ORDERBOOK = {
+  [symbol: string]: {
+    [stock: string]: {
+      [price: string]: {
+        total: number;
+        orders: {
+          [user: string]: number;
+        };
+      };
+    };
+  };
 };
 
-type Order = {
-  total: number;
-  orders: Record<string, number>;
+export type stockType = {
+  []
 };
 
-export type STOCK_BALANCE = {
-  [user: string]: UserAssets;
-};
-
-type UserAssets = {
-  [asset: string]: AssetSides;
-};
-
-type AssetSides = {
-  YES?: Stock;
-  NO?: Stock;
-};
-
-type Stock = {
-  quantity: number;
-  locked: number;
+type STOCK_BALANCE = {
+  [user: string]: {
+    [symbol: string]: {
+      [stock: string]: {
+        quantity: number;
+        locked: number;
+      };
+    };
+  };
 };
