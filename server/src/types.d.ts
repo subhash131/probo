@@ -12,7 +12,7 @@ export type STOCK_BALANCE = {
   [user: string]: Market;
 };
 
-export type Market = {
+type Market = {
   yes?: Side;
   no?: Side;
 };
