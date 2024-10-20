@@ -1,12 +1,12 @@
-import type { ORDER, Market } from "../types";
+import type { ORDERBOOK } from "../types";
 
-export function clearOrders(order: ORDER): void {
+export function clearOrders(order: ORDERBOOK): void {
   Object.keys(order).forEach((asset) => {
     const markets = order[asset];
 
     // Clear each stock(yes/no) for the asset
     Object.keys(markets).forEach((stock) => {
-      const sideEntries = markets[stock as keyof Market];
+      const sideEntries = markets[stock];
 
       // Check if sideEntries exist and clear its properties
       if (sideEntries) {
@@ -16,7 +16,7 @@ export function clearOrders(order: ORDER): void {
       }
 
       // Optionally delete the side itself if required
-      delete markets[stock as keyof Market];
+      delete markets[stock];
     });
     delete order[asset];
   });

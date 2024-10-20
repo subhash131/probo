@@ -1,5 +1,5 @@
 import { Router, type Request, type Response } from "express";
-import { ORDERBOOK, STOCK_BALANCES } from "../db";
+import { INR_BALANCES, ORDERBOOK, STOCK_BALANCES } from "../db";
 
 const router = Router();
 
@@ -9,11 +9,30 @@ router.post("/create/:stockSymbol", (req: Request, res: Response) => {
   if (STOCK_BALANCES[stockSymbol]) {
     res.status(400).send({ msg: "Stock symbol already exist!" });
   } else {
-    STOCK_BALANCES[stockSymbol] = {
-      no: {},
-      yes: {},
-    };
-    res.send({ msg: "Stock symbol created created!" }).status(201);
+    const stock = { quantity: 100, locked: 50 };
+    const market = { yes: { ...stock }, no: { ...stock } };
+
+    if (!STOCK_BALANCES["user1"]) {
+      STOCK_BALANCES["user1"] = { [stockSymbol]: structuredClone(market) };
+    } else {
+      STOCK_BALANCES["user1"] = {
+        ...STOCK_BALANCES["user1"],
+        [stockSymbol]: structuredClone(market),
+      };
+    }
+    if (!STOCK_BALANCES["user2"]) {
+      STOCK_BALANCES["user2"] = { [stockSymbol]: structuredClone(market) };
+    } else {
+      STOCK_BALANCES["user2"] = {
+        ...STOCK_BALANCES["user2"],
+        [stockSymbol]: structuredClone(market),
+      };
+    }
+
+    INR_BALANCES["user1"] = { balance: 100, locked: 0 };
+    INR_BALANCES["user2"] = { balance: 100, locked: 0 };
+
+    res.send({ STOCK_BALANCES }).status(201);
   }
 });
 

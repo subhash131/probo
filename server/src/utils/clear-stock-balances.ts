@@ -1,4 +1,4 @@
-import type { Market, STOCK_BALANCE } from "../types";
+import type { STOCK_BALANCE } from "../types";
 
 export function clearStockBalance(stockBalance: STOCK_BALANCE): void {
   Object.keys(stockBalance).forEach((user) => {
@@ -6,7 +6,7 @@ export function clearStockBalance(stockBalance: STOCK_BALANCE): void {
 
     // Clear each stock for the user
     Object.keys(symbol).forEach((stock) => {
-      const stockEntries = symbol[stock as keyof Market];
+      const stockEntries = symbol[stock];
       if (stockEntries) {
         // Clear all entries under the stock
         Object.keys(stockEntries).forEach((price) => {
@@ -14,7 +14,7 @@ export function clearStockBalance(stockBalance: STOCK_BALANCE): void {
         });
       }
       // Delete the stock itself
-      delete symbol[stock as keyof Market];
+      delete symbol[stock];
     });
 
     // Finally, delete the user from stockBalance
