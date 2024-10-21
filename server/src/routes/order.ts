@@ -56,6 +56,7 @@ router.post("/buy", (req: Request, res: Response) => {
     return;
   }
 
+  //helper function
   const updateBuyerQuantity = ({
     quantity,
     locked,
@@ -69,6 +70,7 @@ router.post("/buy", (req: Request, res: Response) => {
       STOCK_BALANCES[userId][stockSymbol][stockType]
     ) {
       STOCK_BALANCES[userId][stockSymbol][stockType].quantity += quantity;
+      STOCK_BALANCES[userId][stockSymbol][stockType].locked += quantity;
     } else {
       const stkType = { quantity, locked };
       const stkSymbol = { [stockType]: stkType };
