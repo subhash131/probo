@@ -14,6 +14,7 @@ import orderRoutes from "./routes/order";
 import tradeRoutes from "./routes/trade";
 import { INR_BALANCES, STOCK_BALANCES } from "./db";
 import { getTradingData } from "./utils/get-trading-data";
+import { fetchMarket } from "./utils/fetch-market";
 
 const app = express();
 const port = 8000;
@@ -53,13 +54,6 @@ app.use("/onramp", onrampRoutes);
 app.use("/order", orderRoutes);
 app.use("/trade", tradeRoutes);
 
-export type Market = {
-  [name: string]: {
-    [stockType: string]: number;
-  };
-};
-const market: Market = {};
-
 // websocket
 io.on("connection", (socket: Socket) => {
   console.log("a user connected::", socket.id);
@@ -73,37 +67,16 @@ io.on("connection", (socket: Socket) => {
   });
 
   socket.on("fetch-market", () => {
-    for (const user of Object.keys(STOCK_BALANCES)) {
-      const symbol = STOCK_BALANCES[user];
-      for (const sym of Object.keys(symbol)) {
-        const stock = symbol[sym];
-        Object.keys(stock).forEach((current) => {
-          if (!market[sym]) {
-            market[sym] = { [current]: stock[current].quantity };
-          } else {
-            if (market[sym][current]) {
-              market[sym] = {
-                ...market[sym],
-                [current]: stock[current].quantity + market[sym][current],
-              };
-            } else {
-              market[sym] = {
-                ...market[sym],
-                [current]: stock[current].quantity,
-              };
-            }
-          }
-        });
-      }
-    }
+    const market = fetchMarket();
+    console.log("market ::", market);
     socket.emit("market-response", market);
   });
 
   socket.on("subscribe", (symbol) => {
     console.log(`${socket.id} :: subscribed room :: ${symbol}`);
     socket.join(symbol);
+    const market = fetchMarket();
     if (!market[symbol]) return;
-
     const marketData = getTradingData(market[symbol], symbol);
     io.to(symbol).emit("stock-data", marketData);
   });
@@ -114,6 +87,7 @@ io.on("connection", (socket: Socket) => {
   });
 
   socket.on("trade", (symbol) => {
+    const market = fetchMarket();
     const marketData = getTradingData(market[symbol], symbol);
     io.to(symbol).emit("stock-data", marketData);
   });

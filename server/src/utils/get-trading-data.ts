@@ -1,9 +1,9 @@
-import type { Market } from "..";
+import type { Market } from "./fetch-market";
 
 export function getTradingData(data: Market["symbol"], symbol: string) {
   const sum = data.yes + data.no;
-  const yes = ((data.yes / sum) * 10).toFixed(2);
-  const no = ((data.no / sum) * 10).toFixed(2);
+  const Yes = ((data.yes / sum) * 10).toFixed(2);
+  const No = ((data.no / sum) * 10).toFixed(2);
 
-  return { [symbol]: { yes, no } };
+  return { [symbol]: { Yes, No } };
 }
