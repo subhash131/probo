@@ -13,6 +13,7 @@ import onrampRoutes from "./routes/onramp";
 import orderRoutes from "./routes/order";
 import tradeRoutes from "./routes/trade";
 import { INR_BALANCES, STOCK_BALANCES } from "./db";
+import { getTradingData } from "./utils/get-trading-data";
 
 const app = express();
 const port = 8000;
@@ -52,7 +53,7 @@ app.use("/onramp", onrampRoutes);
 app.use("/order", orderRoutes);
 app.use("/trade", tradeRoutes);
 
-type Market = {
+export type Market = {
   [name: string]: {
     [stockType: string]: number;
   };
@@ -80,10 +81,17 @@ io.on("connection", (socket: Socket) => {
           if (!market[sym]) {
             market[sym] = { [current]: stock[current].quantity };
           } else {
-            market[sym] = {
-              ...market[sym],
-              [current]: stock[current].quantity + market[sym][current] || 0,
-            };
+            if (market[sym][current]) {
+              market[sym] = {
+                ...market[sym],
+                [current]: stock[current].quantity + market[sym][current],
+              };
+            } else {
+              market[sym] = {
+                ...market[sym],
+                [current]: stock[current].quantity,
+              };
+            }
           }
         });
       }
@@ -94,9 +102,10 @@ io.on("connection", (socket: Socket) => {
   socket.on("subscribe", (symbol) => {
     console.log(`${socket.id} :: subscribed room :: ${symbol}`);
     socket.join(symbol);
-    io.to(symbol).emit("stock-data", market[symbol]);
-    console.log("🚀 ~ socket.on ~ market[symbol]:", market);
-    console.log("🚀 ~ socket.on ~ market::", market[symbol]);
+    if (!market[symbol]) return;
+
+    const marketData = getTradingData(market[symbol], symbol);
+    io.to(symbol).emit("stock-data", marketData);
   });
 
   socket.on("unsubscribe", (symbol) => {
@@ -105,7 +114,8 @@ io.on("connection", (socket: Socket) => {
   });
 
   socket.on("trade", (symbol) => {
-    io.to(symbol).emit("stock-data", market[symbol]);
+    const marketData = getTradingData(market[symbol], symbol);
+    io.to(symbol).emit("stock-data", marketData);
   });
 
   socket.on("disconnect", () => {
