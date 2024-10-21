@@ -12,7 +12,7 @@ import resetRoutes from "./routes/reset";
 import onrampRoutes from "./routes/onramp";
 import orderRoutes from "./routes/order";
 import tradeRoutes from "./routes/trade";
-import { INR_BALANCES } from "./db";
+import { INR_BALANCES, STOCK_BALANCES } from "./db";
 
 const app = express();
 const port = 8000;
@@ -24,6 +24,7 @@ const io = new Server(server, {
     methods: ["GET", "POST", "PUT", "DELETE"],
   },
 });
+
 // Configure CORS
 app.use(
   cors({
@@ -31,6 +32,11 @@ app.use(
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
 );
+
+//server
+server.listen(port, () => {
+  console.log(`Probo listening on port ${port}`);
+});
 
 //parse JSON bodies
 app.use(express.json());
@@ -46,10 +52,12 @@ app.use("/onramp", onrampRoutes);
 app.use("/order", orderRoutes);
 app.use("/trade", tradeRoutes);
 
-//server
-server.listen(port, () => {
-  console.log(`Probo listening on port ${port}`);
-});
+type Market = {
+  [name: string]: {
+    [stockType: string]: number;
+  };
+};
+const market: Market = {};
 
 // websocket
 io.on("connection", (socket: Socket) => {
@@ -61,6 +69,43 @@ io.on("connection", (socket: Socket) => {
     } else {
       socket.emit("balance-response", { msg: "User not found" });
     }
+  });
+
+  socket.on("fetch-market", () => {
+    for (const user of Object.keys(STOCK_BALANCES)) {
+      const symbol = STOCK_BALANCES[user];
+      for (const sym of Object.keys(symbol)) {
+        const stock = symbol[sym];
+        Object.keys(stock).forEach((current) => {
+          if (!market[sym]) {
+            market[sym] = { [current]: stock[current].quantity };
+          } else {
+            market[sym] = {
+              ...market[sym],
+              [current]: stock[current].quantity + market[sym][current] || 0,
+            };
+          }
+        });
+      }
+    }
+    socket.emit("market-response", market);
+  });
+
+  socket.on("subscribe", (symbol) => {
+    console.log(`${socket.id} :: subscribed room :: ${symbol}`);
+    socket.join(symbol);
+    io.to(symbol).emit("stock-data", market[symbol]);
+    console.log("🚀 ~ socket.on ~ market[symbol]:", market);
+    console.log("🚀 ~ socket.on ~ market::", market[symbol]);
+  });
+
+  socket.on("unsubscribe", (symbol) => {
+    console.log(`${socket.id} :: unsubscribed room :: ${symbol}`);
+    socket.leave(symbol);
+  });
+
+  socket.on("trade", (symbol) => {
+    io.to(symbol).emit("stock-data", market[symbol]);
   });
 
   socket.on("disconnect", () => {
