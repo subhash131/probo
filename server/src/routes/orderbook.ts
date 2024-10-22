@@ -1,5 +1,5 @@
 import { Router, type Request, type Response } from "express";
-import { ORDERBOOK, STOCK_BALANCES } from "../db";
+import { ORDERBOOK } from "../db";
 
 const router = Router();
 
