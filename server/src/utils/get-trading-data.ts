@@ -1,4 +1,4 @@
-import type { Market } from "./fetch-market";
+import type { Market } from "./fetch-stock-balance";
 
 export function getTradingData(data: Market["symbol"], symbol: string) {
   const sum = Number(data?.yes) + Number(data?.no);

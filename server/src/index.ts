@@ -14,7 +14,7 @@ import orderRoutes from "./routes/order";
 import tradeRoutes from "./routes/trade";
 import { INR_BALANCES } from "./db";
 import { getTradingData } from "./utils/get-trading-data";
-import { fetchMarket } from "./utils/fetch-market";
+import { fetchStockBalance } from "./utils/fetch-stock-balance";
 
 const app = express();
 const port = 8000;
@@ -67,7 +67,7 @@ io.on("connection", (socket: Socket) => {
   });
 
   socket.on("fetch-market", () => {
-    const market = fetchMarket();
+    const market = fetchStockBalance();
     console.log("fetch-market ::", market);
     socket.emit("market-response", market);
   });
@@ -75,7 +75,7 @@ io.on("connection", (socket: Socket) => {
   socket.on("subscribe", (symbol) => {
     console.log(`${socket.id} :: subscribed room :: ${symbol}`);
     socket.join(symbol);
-    const market = fetchMarket();
+    const market = fetchStockBalance();
     console.log("🚀 ~ subscribe ~ market:", market);
     if (!market[symbol]) return;
     const marketData = getTradingData(market[symbol], symbol);
@@ -88,7 +88,7 @@ io.on("connection", (socket: Socket) => {
   });
 
   socket.on("trade", (symbol) => {
-    const market = fetchMarket();
+    const market = fetchStockBalance();
     if (!market) return;
     const marketData = getTradingData(market[symbol], symbol);
     io.to(symbol).emit("stock-data", marketData);

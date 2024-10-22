@@ -5,7 +5,7 @@ export type Market = {
     [stockType: string]: number;
   };
 };
-export function fetchMarket() {
+export function fetchStockBalance() {
   const market: Market = {};
   for (const user of Object.keys(STOCK_BALANCES)) {
     const symbol = STOCK_BALANCES[user];
