@@ -7,34 +7,44 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
 
-type Stock = {
-  [symbol: string]: {
-    [type: string]: number;
-  };
-};
-
 const page = () => {
   const { socket, isConnected } = useSocket();
   const { symbol } = useParams();
-  const [stock, setStock] = useState<Stock>({});
   const { username } = useSelector((state: RootState) => state.username);
+  const { stock } = useSelector((state: RootState) => state.stock);
   const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
-    if (!isConnected) return;
     socket?.emit("subscribe", symbol);
-    socket?.on("stock-data", (stock) => {
-      console.log("🚀 ~ socket?.on ~ stock:", stock);
-      setStock(stock);
-    });
 
     return () => {
       socket?.emit("unsubscribe", symbol);
     };
   }, [isConnected]);
 
-  const handleClick = () => {
-    setModalOpen(true);
+  const handleClick = async ({ stockType }: { stockType: string }) => {
+    if (!username) {
+      toast.error("Username not found");
+      return;
+    }
+
+    const body = {
+      userId: username,
+      stockSymbol: symbol,
+      quantity: 5,
+      price: 5,
+      stockType,
+    };
+
+    const res = await fetch("http://localhost:8000/order/buy", {
+      method: "POST",
+      body: JSON.stringify(body),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then(async (res) => await res.json());
+    socket?.emit("trade", symbol);
+    toast.info(res.message);
   };
 
   return (
@@ -52,7 +62,9 @@ const page = () => {
                     ? "bg-[rgba(248,113,113,0.2)] text-red-500"
                     : "bg-[rgba(96,165,250,0.2)] text-blue-500"
                 }`}
-                onClick={handleClick}
+                onClick={() =>
+                  handleClick({ stockType: stockType.toLowerCase() })
+                }
               >
                 {`₹${stock[symbol][stockType]} ${stockType}`}
               </button>

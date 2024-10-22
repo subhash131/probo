@@ -11,7 +11,7 @@ router.post("/", (req: Request, res: Response) => {
   clearInrBalances(INR_BALANCES);
   clearOrders(ORDERBOOK);
   clearStockBalance(STOCK_BALANCES);
-  res.send({ msg: "reset complete" }).status(200);
+  res.send({ message: "reset complete" }).status(200);
 });
 
 export default router;

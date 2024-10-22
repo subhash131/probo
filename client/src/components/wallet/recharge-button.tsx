@@ -40,7 +40,7 @@ const RechargeButton = ({ amount }: { amount: number | undefined }) => {
       }
     }
 
-    toast.info(data.msg);
+    toast.info(data.message);
   };
   return (
     <button

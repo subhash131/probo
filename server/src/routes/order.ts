@@ -21,12 +21,14 @@ router.post("/buy", (req: Request, res: Response) => {
     stockType
   );
   if (invalidInput) {
-    res.send({ msg: "Invalid body, please recheck the fields" }).status(404);
+    res
+      .send({ message: "Invalid body, please recheck the fields" })
+      .status(404);
     return;
   }
 
   if (!INR_BALANCES[userId]) {
-    res.send({ msg: "user not found!" }).status(404);
+    res.send({ message: "user not found!" }).status(404);
     return;
   }
 
@@ -41,7 +43,7 @@ router.post("/buy", (req: Request, res: Response) => {
     }
   });
   if (!myPurchases.isStockValid) {
-    res.send({ msg: "Stock symbol not found!" }).status(404);
+    res.send({ message: "Stock symbol not found!" }).status(404);
     return;
   }
 
@@ -52,7 +54,7 @@ router.post("/buy", (req: Request, res: Response) => {
     INR_BALANCES[userId].balance - INR_BALANCES[userId].locked <
     quantity * price
   ) {
-    res.send({ msg: "Insufficient Balance!" }).status(400);
+    res.send({ message: "Insufficient Balance!" }).status(400);
     return;
   }
 
@@ -167,7 +169,7 @@ router.post("/buy", (req: Request, res: Response) => {
     ORDERBOOK[stockSymbol] = { ...ORDERBOOK[stockSymbol], ...stock };
   }
 
-  res.send({ STOCK_BALANCES }).status(200);
+  res.send({ message: `Buy order matched at best price ${price}` }).status(200);
 });
 
 //Place Sell Order for yes and no
@@ -181,11 +183,13 @@ router.post("/sell", (req: Request, res: Response) => {
     stockType
   );
   if (invalidInput) {
-    res.send({ msg: "Invalid body, please recheck the fields" }).status(404);
+    res
+      .send({ message: "Invalid body, please recheck the fields" })
+      .status(404);
     return;
   }
   if (!INR_BALANCES[userId]) {
-    res.send({ msg: "username not found!" }).status(404);
+    res.send({ message: "username not found!" }).status(404);
     return;
   }
   if (
@@ -193,13 +197,15 @@ router.post("/sell", (req: Request, res: Response) => {
     !STOCK_BALANCES[userId][stockSymbol] &&
     !STOCK_BALANCES[userId][stockSymbol][stockType]
   ) {
-    res.send({ msg: "You don't own this stock" }).status(400);
+    res.send({ message: "You don't own this stock" }).status(400);
     return;
   }
   if (
     STOCK_BALANCES[userId][stockSymbol][stockType].quantity < Number(quantity)
   ) {
-    res.send({ msg: "You don't own have enough stocks to sell" }).status(400);
+    res
+      .send({ message: "You don't own have enough stocks to sell" })
+      .status(400);
     return;
   }
   STOCK_BALANCES[userId][stockSymbol][stockType].locked -= quantity;

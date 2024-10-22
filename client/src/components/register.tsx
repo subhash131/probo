@@ -18,7 +18,7 @@ const RegisterButton = () => {
       },
     });
     const data = await res.json();
-    toast.info(data.msg);
+    toast.info(data.message);
   };
   return (
     <button

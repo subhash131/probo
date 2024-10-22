@@ -7,7 +7,7 @@ const router = Router();
 router.post("/create/:stockSymbol", (req: Request, res: Response) => {
   const { stockSymbol } = req.params;
   if (STOCK_BALANCES[stockSymbol]) {
-    res.status(400).send({ msg: "Stock symbol already exist!" });
+    res.status(400).send({ message: "Stock symbol already exist!" });
   } else {
     const stock = { quantity: 100, locked: 50 };
     const market = { yes: { ...stock }, no: { ...stock } };
@@ -32,7 +32,7 @@ router.post("/create/:stockSymbol", (req: Request, res: Response) => {
     INR_BALANCES["user1"] = { balance: 100, locked: 0 };
     INR_BALANCES["user2"] = { balance: 100, locked: 0 };
 
-    res.send({ STOCK_BALANCES }).status(201);
+    res.send({ message: `Symbol ${stockSymbol} created` }).status(201);
   }
 });
 

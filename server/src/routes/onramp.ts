@@ -10,11 +10,13 @@ router.post("/inr", (req: Request, res: Response) => {
   const invalidInput = validateInput(userId, amount);
 
   if (invalidInput) {
-    res.send({ msg: "Invalid body, please recheck the fields" }).status(404);
+    res
+      .send({ message: "Invalid body, please recheck the fields" })
+      .status(404);
     return;
   }
   if (!INR_BALANCES[userId]) {
-    res.send({ msg: "user not found!" }).status(404);
+    res.send({ message: "user not found!" }).status(404);
     return;
   }
 
@@ -23,7 +25,7 @@ router.post("/inr", (req: Request, res: Response) => {
     balance: INR_BALANCES[userId].balance + Number(amount),
   };
   INR_BALANCES[userId] = updatedBalance;
-  res.send({ msg: "user balance updated!" }).status(200);
+  res.send({ message: `Onramped ${userId} with amount ${amount}` }).status(200);
 });
 
 export default router;

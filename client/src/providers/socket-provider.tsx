@@ -1,4 +1,5 @@
 "use client";
+import { setStock } from "@/state-manager/features/stock";
 import React, {
   createContext,
   useContext,
@@ -6,6 +7,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
+import { useDispatch } from "react-redux";
 import { io, Socket } from "socket.io-client";
 
 type ContextType = {
@@ -27,6 +29,7 @@ const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const [isConnected, setIsConnected] = useState(false);
   const [transport, setTransport] = useState("N/A");
   const socket = useMemo(() => io("http://localhost:8000"), []);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (socket.connected) {
@@ -48,6 +51,11 @@ const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
+
+    socket?.on("stock-data", (stock) => {
+      console.log("🚀 ~ socket?.on ~ stock:", stock);
+      dispatch(setStock(stock));
+    });
 
     return () => {
       socket.off("connect", onConnect);
