@@ -11,11 +11,12 @@ router.get("/", (req: Request, res: Response) => {
 //View Orderbook
 router.get("/:stockSymbol", (req: Request, res: Response) => {
   const { stockSymbol } = req.params;
-  if (!STOCK_BALANCES[stockSymbol]) {
+  console.log("🚀 ~ router.get ~ stockSymbol:", stockSymbol);
+  if (!ORDERBOOK[stockSymbol]) {
     res.send({ msg: "Stock symbol not found!" }).status(404);
     return;
   }
-  res.send(STOCK_BALANCES[stockSymbol]).status(200);
+  res.send(ORDERBOOK[stockSymbol]).status(200);
 });
 
 export default router;
