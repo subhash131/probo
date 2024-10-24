@@ -11,12 +11,12 @@ router.post("/inr", (req: Request, res: Response) => {
 
   if (invalidInput) {
     res
-      .send({ message: "Invalid body, please recheck the fields" })
-      .status(404);
+      .status(404)
+      .send({ message: "Invalid body, please recheck the fields" });
     return;
   }
   if (!INR_BALANCES[userId]) {
-    res.send({ message: "user not found!" }).status(404);
+    res.status(404).send({ message: "user not found!" });
     return;
   }
 

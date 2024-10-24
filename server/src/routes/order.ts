@@ -95,6 +95,8 @@ router.post("/buy", (req: Request, res: Response) => {
       const sellingQuantity = totalQuantity - locked;
       const buyingQuantity = quantity - myPurchases.bought;
 
+      console.log("🚀 ~ router.post ~ user:", user);
+
       if (sellingQuantity >= buyingQuantity) {
         myPurchases.bought += buyingQuantity;
         //update stock balances
@@ -169,7 +171,7 @@ router.post("/buy", (req: Request, res: Response) => {
     ORDERBOOK[stockSymbol] = { ...ORDERBOOK[stockSymbol], ...stock };
   }
 
-  res.send({ message: `Buy order matched at best price ${price}` }).status(200);
+  res.status(200).send({ message: `Buy order placed and trade executed` });
 });
 
 //Place Sell Order for yes and no
@@ -208,8 +210,12 @@ router.post("/sell", (req: Request, res: Response) => {
       .status(400);
     return;
   }
+
   STOCK_BALANCES[userId][stockSymbol][stockType].locked -= quantity;
-  res.send({ STOCK_BALANCES }).status(200);
+
+  res.status(200).send({
+    message: `Sell order placed for ${quantity} '${stockType}' options at price ${price}.`,
+  });
 });
 
 export default router;

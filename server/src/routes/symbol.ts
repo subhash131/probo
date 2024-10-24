@@ -9,30 +9,34 @@ router.post("/create/:stockSymbol", (req: Request, res: Response) => {
   if (STOCK_BALANCES[stockSymbol]) {
     res.status(400).send({ message: "Stock symbol already exist!" });
   } else {
-    const stock = { quantity: 100, locked: 50 };
+    const stock = { quantity: 0, locked: 0 };
     const market = { yes: { ...stock }, no: { ...stock } };
 
-    if (!STOCK_BALANCES["user1"]) {
-      STOCK_BALANCES["user1"] = { [stockSymbol]: structuredClone(market) };
+    if (!STOCK_BALANCES["default-user1"]) {
+      STOCK_BALANCES["default-user1"] = {
+        [stockSymbol]: structuredClone(market),
+      };
     } else {
-      STOCK_BALANCES["user1"] = {
-        ...STOCK_BALANCES["user1"],
+      STOCK_BALANCES["default-user1"] = {
+        ...STOCK_BALANCES["default-user1"],
         [stockSymbol]: structuredClone(market),
       };
     }
-    if (!STOCK_BALANCES["user2"]) {
-      STOCK_BALANCES["user2"] = { [stockSymbol]: structuredClone(market) };
+    if (!STOCK_BALANCES["default-user2"]) {
+      STOCK_BALANCES["default-user2"] = {
+        [stockSymbol]: structuredClone(market),
+      };
     } else {
-      STOCK_BALANCES["user2"] = {
-        ...STOCK_BALANCES["user2"],
+      STOCK_BALANCES["default-user2"] = {
+        ...STOCK_BALANCES["default-user2"],
         [stockSymbol]: structuredClone(market),
       };
     }
 
-    INR_BALANCES["user1"] = { balance: 100, locked: 0 };
-    INR_BALANCES["user2"] = { balance: 100, locked: 0 };
+    INR_BALANCES["default-user1"] = { balance: 100, locked: 0 };
+    INR_BALANCES["default-user2"] = { balance: 100, locked: 0 };
 
-    res.send({ message: `Symbol ${stockSymbol} created` }).status(201);
+    res.status(201).send({ message: `Symbol ${stockSymbol} created` });
   }
 });
 

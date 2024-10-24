@@ -10,7 +10,7 @@ router.post("/create/:userId", (req: Request, res: Response) => {
     res.status(400).send({ message: "user already exist!" });
   } else {
     INR_BALANCES[userId] = { balance: 0, locked: 0 };
-    res.send({ message: `User ${userId} created` }).status(201);
+    res.status(201).send({ message: `User ${userId} created` });
   }
 });
 

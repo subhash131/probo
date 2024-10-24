@@ -105,16 +105,16 @@ describe("E-to-E-2", () => {
     // Step 2: Add balance to user3
     response = await request(app).post("/onramp/inr").send({
       userId: "user3",
-      amount: 100000,
+      amount: 200000,
     });
     expect(response.status).toBe(200);
-    expect(response.body.message).toBe("Onramped user3 with amount 100000");
+    expect(response.body.message).toBe("Onramped user3 with amount 200000");
 
     // Fetch INR_BALANCES after adding balance
     response = await request(app).get("/balances/inr");
     expect(response.status).toBe(200);
     expect(response.body["user3"]).toEqual({
-      balance: 100000,
+      balance: 200000,
       locked: 0,
     });
 
