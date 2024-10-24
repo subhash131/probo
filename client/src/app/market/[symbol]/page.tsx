@@ -1,5 +1,6 @@
 "use client";
 import Modal from "@/components/market/modal";
+import OrderbookChart from "@/components/market/orderbook-chart";
 import { useSocket } from "@/providers/socket-provider";
 import { RootState } from "@/state-manager/store";
 import { useParams } from "next/navigation";
@@ -31,9 +32,9 @@ const page = () => {
     const body = {
       userId: username,
       stockSymbol: symbol,
-      quantity: 5,
-      price: 5,
-      stockType,
+      quantity: 1,
+      price: stock[symbol as string][stockType],
+      stockType: stockType.toLowerCase(),
     };
 
     const res = await fetch("http://localhost:8000/order/buy", {
@@ -50,21 +51,19 @@ const page = () => {
   return (
     <div className="w-screen h-screen flex items-center justify-center flex-col gap-3 relative">
       <Modal open={modalOpen} setModalOpen={setModalOpen} />
-      {JSON.stringify(stock)}
+      <OrderbookChart />
       <div className="flex gap-2">
         {typeof symbol === "string" &&
           stock[symbol] &&
           Object.keys(stock[symbol]).map((stockType) => {
             return (
               <button
-                className={`w-52 py-2 rounded-md bg-dark text-white active:scale-95 transition-transform text-sm ${
+                className={`w-48 py-2 rounded-md active:scale-95 transition-transform text-sm ${
                   stockType === "No"
-                    ? "bg-[rgba(248,113,113,0.2)] text-red-500"
-                    : "bg-[rgba(96,165,250,0.2)] text-blue-500"
+                    ? "bg-[rgba(248,113,113,0.4)] text-red-500"
+                    : "bg-[rgba(96,165,250,0.4)] text-blue-500"
                 }`}
-                onClick={() =>
-                  handleClick({ stockType: stockType.toLowerCase() })
-                }
+                onClick={() => handleClick({ stockType })}
               >
                 {`₹${stock[symbol][stockType]} ${stockType}`}
               </button>

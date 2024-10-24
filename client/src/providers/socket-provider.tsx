@@ -1,4 +1,5 @@
 "use client";
+import { setOrderbook } from "@/state-manager/features/orderbook";
 import { setStock } from "@/state-manager/features/stock";
 import React, {
   createContext,
@@ -11,14 +12,12 @@ import { useDispatch } from "react-redux";
 import { io, Socket } from "socket.io-client";
 
 type ContextType = {
-  transport: string;
   isConnected: boolean;
   socket: Socket | undefined;
 };
 
 const initialState = {
   isConnected: false,
-  transport: "N/A",
   socket: undefined,
 };
 
@@ -27,7 +26,6 @@ export const useSocket = () => useContext(SocketContext);
 
 const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const [isConnected, setIsConnected] = useState(false);
-  const [transport, setTransport] = useState("N/A");
   const socket = useMemo(() => io("http://localhost:8000"), []);
   const dispatch = useDispatch();
 
@@ -38,24 +36,21 @@ const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
     function onConnect() {
       setIsConnected(true);
-      setTransport(socket.io.engine.transport.name);
-      socket.io.engine.on("upgrade", (transport) => {
-        setTransport(transport.name);
+
+      socket?.on("stock-data", (stock) => {
+        dispatch(setStock(stock));
+      });
+      socket?.on("orderbook", (orderbook) => {
+        dispatch(setOrderbook(orderbook));
       });
     }
 
     function onDisconnect() {
       setIsConnected(false);
-      setTransport("N/A");
     }
 
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
-
-    socket?.on("stock-data", (stock) => {
-      console.log("🚀 ~ socket?.on ~ stock:", stock);
-      dispatch(setStock(stock));
-    });
 
     return () => {
       socket.off("connect", onConnect);
@@ -64,7 +59,7 @@ const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <SocketContext.Provider value={{ isConnected, transport, socket }}>
+    <SocketContext.Provider value={{ isConnected, socket }}>
       {children}
     </SocketContext.Provider>
   );

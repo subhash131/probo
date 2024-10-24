@@ -3,8 +3,15 @@ import walletBalance from "./features/wallet-balance";
 import username from "./features/username";
 import market from "./features/market";
 import stock from "./features/stock";
+import orderbook from "./features/orderbook";
 
-const reducer = combineReducers({ walletBalance, username, market, stock });
+const reducer = combineReducers({
+  walletBalance,
+  username,
+  market,
+  stock,
+  orderbook,
+});
 
 export const store = configureStore({
   reducer,

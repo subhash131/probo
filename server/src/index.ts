@@ -12,7 +12,7 @@ import resetRoutes from "./routes/reset";
 import onrampRoutes from "./routes/onramp";
 import orderRoutes from "./routes/order";
 import tradeRoutes from "./routes/trade";
-import { INR_BALANCES } from "./db";
+import { INR_BALANCES, ORDERBOOK } from "./db";
 import { getTradingData } from "./utils/get-trading-data";
 import { fetchStockBalance } from "./utils/fetch-stock-balance";
 
@@ -79,7 +79,11 @@ io.on("connection", (socket: Socket) => {
     console.log("🚀 ~ subscribe ~ market:", market);
     if (!market[symbol]) return;
     const marketData = getTradingData(market[symbol], symbol);
+    const orderbook = ORDERBOOK[symbol];
+    console.log("🚀 ~ socket.on ~ orderbook:", orderbook);
+
     io.to(symbol).emit("stock-data", marketData);
+    io.to(symbol).emit("orderbook", orderbook);
   });
 
   socket.on("unsubscribe", (symbol) => {
@@ -91,7 +95,11 @@ io.on("connection", (socket: Socket) => {
     const market = fetchStockBalance();
     if (!market) return;
     const marketData = getTradingData(market[symbol], symbol);
+    const orderbook = ORDERBOOK[symbol];
+    console.log("🚀 ~ socket.on ~ orderbook:", orderbook);
+
     io.to(symbol).emit("stock-data", marketData);
+    io.to(symbol).emit("orderbook", orderbook);
   });
 
   socket.on("disconnect", () => {

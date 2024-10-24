@@ -11,7 +11,6 @@ router.get("/", (req: Request, res: Response) => {
 //View Orderbook
 router.get("/:stockSymbol", (req: Request, res: Response) => {
   const { stockSymbol } = req.params;
-  console.log("🚀 ~ router.get ~ stockSymbol:", stockSymbol);
   if (!ORDERBOOK[stockSymbol]) {
     res.send({ message: "Stock symbol not found!" }).status(404);
     return;
