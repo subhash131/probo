@@ -2,22 +2,21 @@
 
 import React, { useState } from "react";
 import RechargeButton from "./recharge-button";
-import RegisterButton from "../register";
+import InputField from "../input-field";
 
-const AddFunds = () => {
-  const [amount, setAmount] = useState<number>(0);
+const RechargeAccount = () => {
+  const [amount, setAmount] = useState("50000");
   return (
-    <div className="w-full h-full flex items-center justify-center flex-col gap-4">
-      <input
-        className="px-3 py-2 outline-none border rounded-lg"
-        type="number"
-        value={amount}
-        onChange={(e) => setAmount(Number(e.target.value))}
+    <div className="w-60 h-fit py-4 px-4 rounded border  border-dashed border-dark flex flex-col gap-4">
+      <InputField
+        field={amount}
+        name="Recharge your Account"
+        setField={setAmount}
       />
+
       <RechargeButton amount={amount} />
-      <RegisterButton />
     </div>
   );
 };
 
-export default AddFunds;
+export default RechargeAccount;

@@ -5,7 +5,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 
-const RechargeButton = ({ amount }: { amount: number | undefined }) => {
+const RechargeButton = ({ amount }: { amount: string | undefined }) => {
   const { username } = useSelector((state: RootState) => state.username);
   const dispatch = useDispatch();
   const recharge = async () => {
@@ -44,10 +44,10 @@ const RechargeButton = ({ amount }: { amount: number | undefined }) => {
   };
   return (
     <button
-      className="bg-dark rounded-lg active:scale-95 transition-transform px-4 py-2 text-white"
+      className="bg-dark rounded active:scale-95 transition-transform px-4 py-2 text-xs w-fit text-white"
       onClick={recharge}
     >
-      recharge
+      Recharge
     </button>
   );
 };
