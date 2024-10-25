@@ -58,14 +58,18 @@ const page = () => {
           Object.keys(stock[symbol]).map((stockType) => {
             return (
               <button
-                className={`w-48 py-2 rounded-md active:scale-95 transition-transform text-sm ${
+                className={`w-48 py-2 rounded-md active:scale-95 disabled:scale-100 transition-transform text-sm font-semibold ${
                   stockType === "No"
-                    ? "bg-[rgba(248,113,113,0.4)] text-red-500"
-                    : "bg-[rgba(96,165,250,0.4)] text-blue-500"
+                    ? "bg-[rgba(248,113,113,0.2)] text-red-500"
+                    : "bg-[rgba(96,165,250,0.2)] text-blue-500"
                 }`}
                 onClick={() => handleClick({ stockType })}
+                key={symbol + stockType}
+                disabled={stock[symbol][stockType].toString() === "NaN"}
               >
-                {`₹${stock[symbol][stockType]} ${stockType}`}
+                {stock[symbol][stockType].toString() === "NaN"
+                  ? `0 ${stockType}`
+                  : `₹${stock[symbol][stockType]} ${stockType}`}
               </button>
             );
           })}

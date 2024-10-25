@@ -4,6 +4,7 @@ import { setMarket } from "@/state-manager/features/market";
 import { RootState } from "@/state-manager/store";
 import Link from "next/link";
 import React, { useEffect } from "react";
+import { PiPlus } from "react-icons/pi";
 import { useDispatch, useSelector } from "react-redux";
 
 const Market = () => {
@@ -20,7 +21,18 @@ const Market = () => {
   }, [isConnected]);
 
   return (
-    <div className="w-screen h-screen flex flex-wrap items-center justify-center gap-2">
+    <div className="no-scrollbar size-full overflow-x-scroll flex flex-wrap items-center justify-center gap-2">
+      {Object.keys(market).length === 0 && (
+        <div className="py-1 px-2 text-xs flex items-center gap-2">
+          <p>No active stocks found</p>
+          <Link
+            href="/admin"
+            className="bg-dark text-white px-4 py-2 rounded active:scale-95 transition-all flex gap-1 items-center"
+          >
+            <PiPlus /> Create one
+          </Link>
+        </div>
+      )}
       {Object.keys(market).map((key) => {
         return (
           <Link
