@@ -22,7 +22,10 @@ const OrderbookChart = () => {
           {orderbook?.yes &&
             Object.keys(orderbook.yes).map((price) => {
               return (
-                <div className="flex w-full h-10 border-b items-center justify-between">
+                <div
+                  className="flex w-full h-10 border-b items-center justify-between"
+                  key={`orderbook-yes-${price}`}
+                >
                   <p>{price}</p>
                   <p>{orderbook.yes[price]?.total}</p>
                 </div>
@@ -40,7 +43,10 @@ const OrderbookChart = () => {
           {orderbook?.no &&
             Object.keys(orderbook.no).map((price) => {
               return (
-                <div className="flex w-full h-10 border-b items-center justify-between">
+                <div
+                  className="flex w-full h-10 border-b items-center justify-between"
+                  key={`orderbook-no-${price}`}
+                >
                   <p>{price}</p>
                   <p>{orderbook.no[price]?.total}</p>
                 </div>
