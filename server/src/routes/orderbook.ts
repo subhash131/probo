@@ -5,7 +5,7 @@ const router = Router();
 
 //get ORDERBOOK
 router.get("/", (req: Request, res: Response) => {
-  res.send(ORDERBOOK).status(200);
+  res.status(200).send(ORDERBOOK);
 });
 
 //View Orderbook

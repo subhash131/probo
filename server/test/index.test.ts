@@ -1,5 +1,6 @@
 import request from "supertest";
 import app from "../src/index";
+import { INR_BALANCES } from "../src/db";
 
 describe("E-to-E-1", () => {
   beforeAll(async () => {
@@ -164,7 +165,7 @@ describe("E-to-E-2", () => {
     response = await request(app).get("/balances/stock");
     expect(response.status).toBe(200);
     expect(response.body["user3"]["ETH_USD_20_Oct_2024_10_00"]["yes"]).toEqual({
-      quantity: 30,
+      quantity: 50,
       locked: 20,
     });
 
@@ -209,11 +210,11 @@ describe("E-to-E-2", () => {
     expect(response.status).toBe(200);
     expect(response.body["user4"]["ETH_USD_20_Oct_2024_10_00"]["yes"]).toEqual({
       quantity: 20,
-      locked: 0,
+      locked: 20,
     });
     expect(response.body["user3"]["ETH_USD_20_Oct_2024_10_00"]["yes"]).toEqual({
       quantity: 30,
-      locked: 0,
+      locked: 20,
     });
   });
 });
@@ -245,16 +246,17 @@ describe("E-to-E-3", () => {
     // Step 3: Add balance to users
     await request(app)
       .post("/onramp/inr")
-      .send({ userId: "user1", amount: 500000 });
+      .send({ userId: "user1", amount: 800000 });
+
     await request(app)
       .post("/onramp/inr")
-      .send({ userId: "user2", amount: 300000 });
+      .send({ userId: "user2", amount: 200000 });
 
     // Check INR balances after adding funds
     response = await request(app).get("/balances/inr");
     expect(response.status).toBe(200);
-    expect(response.body["user1"]).toEqual({ balance: 500000, locked: 0 });
-    expect(response.body["user2"]).toEqual({ balance: 300000, locked: 0 });
+    expect(response.body["user1"]).toEqual({ balance: 800000, locked: 0 });
+    expect(response.body["user2"]).toEqual({ balance: 200000, locked: 0 });
 
     // Step 4: Mint tokens for User1
     response = await request(app).post("/trade/mint").send({

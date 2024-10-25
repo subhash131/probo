@@ -26,7 +26,7 @@ router.post("/mint", (req: Request, res: Response) => {
   const cost = Number(price) * Number(quantity) * 2;
 
   if (cost > INR_BALANCES[userId].balance - INR_BALANCES[userId].locked) {
-    res.status(400).send({ message: "Insufficient balance!" });
+    res.status(400).send({ message: "Insufficient INR balance" });
     return;
   }
   INR_BALANCES[userId].balance = INR_BALANCES[userId].balance - cost;

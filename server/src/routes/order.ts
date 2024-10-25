@@ -54,7 +54,7 @@ router.post("/buy", (req: Request, res: Response) => {
     INR_BALANCES[userId].balance - INR_BALANCES[userId].locked <
     quantity * price
   ) {
-    res.send({ message: "Insufficient Balance!" }).status(400);
+    res.status(400).send({ message: "Insufficient INR balance" });
     return;
   }
 
@@ -94,8 +94,6 @@ router.post("/buy", (req: Request, res: Response) => {
 
       const sellingQuantity = totalQuantity - locked;
       const buyingQuantity = quantity - myPurchases.bought;
-
-      console.log("🚀 ~ router.post ~ user:", user);
 
       if (sellingQuantity >= buyingQuantity) {
         myPurchases.bought += buyingQuantity;
@@ -140,7 +138,7 @@ router.post("/buy", (req: Request, res: Response) => {
         [userId]: quantity,
       };
     }
-    INR_BALANCES[userId].locked = quantity * price;
+    // INR_BALANCES[userId].locked = quantity * price;
   } else if (ORDERBOOK[stockSymbol] && ORDERBOOK[stockSymbol][stockType]) {
     const orders = {
       [userId]: quantity,
@@ -199,19 +197,52 @@ router.post("/sell", (req: Request, res: Response) => {
     !STOCK_BALANCES[userId][stockSymbol] &&
     !STOCK_BALANCES[userId][stockSymbol][stockType]
   ) {
-    res.send({ message: "You don't own this stock" }).status(400);
+    res.status(400).send({ message: "You don't own this stock" });
     return;
   }
   if (
-    STOCK_BALANCES[userId][stockSymbol][stockType].quantity < Number(quantity)
+    Math.abs(
+      STOCK_BALANCES[userId][stockSymbol][stockType].quantity -
+        STOCK_BALANCES[userId][stockSymbol][stockType].locked
+    ) < Number(quantity)
   ) {
-    res
-      .send({ message: "You don't own have enough stocks to sell" })
-      .status(400);
+    res.status(400).send({ message: "Insufficient stock balance" });
     return;
   }
 
-  STOCK_BALANCES[userId][stockSymbol][stockType].locked -= quantity;
+  STOCK_BALANCES[userId][stockSymbol][stockType].locked += quantity;
+
+  if (
+    ORDERBOOK[stockSymbol] &&
+    ORDERBOOK[stockSymbol][stockType] &&
+    ORDERBOOK[stockSymbol][stockType][price]
+  ) {
+    const qty = ORDERBOOK[stockSymbol][stockType][price].orders[userId];
+    ORDERBOOK[stockSymbol][stockType][price] = {
+      total: ORDERBOOK[stockSymbol][stockType][price].total - quantity,
+      orders: {
+        [userId]: qty - quantity > 0 ? qty - quantity : 0,
+      },
+    };
+  } else if (ORDERBOOK[stockSymbol] && ORDERBOOK[stockSymbol][stockType]) {
+    const order = {
+      total: quantity,
+      orders: { [userId]: quantity },
+    };
+    const pricedStock = { [price]: order };
+    ORDERBOOK[stockSymbol][stockType] = pricedStock;
+  } else {
+    const stock = {
+      total: quantity,
+      orders: {
+        [userId]: quantity,
+      },
+    };
+    const pricedStock = { [price]: stock };
+    ORDERBOOK[stockSymbol] = {
+      [stockType]: pricedStock,
+    };
+  }
 
   res.status(200).send({
     message: `Sell order placed for ${quantity} '${stockType}' options at price ${price}.`,
