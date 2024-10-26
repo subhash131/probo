@@ -76,11 +76,9 @@ io.on("connection", (socket: Socket) => {
     console.log(`${socket.id} :: subscribed room :: ${symbol}`);
     socket.join(symbol);
     const market = fetchStockBalance();
-    console.log("🚀 ~ subscribe ~ market:", market);
     if (!market[symbol]) return;
     const marketData = getTradingData(market[symbol], symbol);
     const orderbook = ORDERBOOK[symbol];
-    console.log("🚀 ~ socket.on ~ orderbook:", orderbook);
 
     io.to(symbol).emit("stock-data", marketData);
     io.to(symbol).emit("orderbook", orderbook);
@@ -96,8 +94,6 @@ io.on("connection", (socket: Socket) => {
     if (!market) return;
     const marketData = getTradingData(market[symbol], symbol);
     const orderbook = ORDERBOOK[symbol];
-    console.log("🚀 ~ socket.on ~ orderbook:", orderbook);
-
     io.to(symbol).emit("stock-data", marketData);
     io.to(symbol).emit("orderbook", orderbook);
   });
