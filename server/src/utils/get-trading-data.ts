@@ -2,8 +2,8 @@ import type { Market } from "./fetch-stock-balance";
 
 export function getTradingData(data: Market["symbol"], symbol: string) {
   const sum = Number(data?.yes) + Number(data?.no);
-  const yesRaw = (data?.yes / sum) * 10;
-  const noRaw = (data?.no / sum) * 10;
+  const yesRaw = (data?.yes / sum) * 10 - 10;
+  const noRaw = (data?.no / sum) * 10 - 10;
 
   const Yes = roundToNearestHalf(yesRaw);
   const No = roundToNearestHalf(noRaw);
